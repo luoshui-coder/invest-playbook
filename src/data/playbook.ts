@@ -32,6 +32,11 @@ export type LearningModule = {
   subtitle: string;
   icon: LucideIcon;
   accent: string;
+  visual: {
+    src: string;
+    alt: string;
+    caption: string;
+  };
   image?: string;
   audience: string;
   coreMetaphor: string;
@@ -78,6 +83,11 @@ export const modules: LearningModule[] = [
     subtitle: "理解同一只基金在场内和场外的两个价格，学会折价、溢价和时间差风险。",
     icon: Shuffle,
     accent: "#2f6f63",
+    visual: {
+      src: "/infographics/lof-arbitrage.png",
+      alt: "LOF 基金套利信息图：基金净值、场内市价、折价溢价和套利步骤",
+      caption: "LOF 套利的核心是同一只基金同时存在净值和场内市价，两者差异只有在覆盖费用、时间差和流动性风险后才有意义。",
+    },
     audience: "适合想理解基金套利、但还分不清净值和市价的新手。",
     coreMetaphor:
       "把 LOF 想成同一瓶水：超市按标签价卖，二手平台按买卖双方报价成交。标签价像基金净值，二手价像场内市价。两边价格偶尔不同，就出现套利空间。",
@@ -146,6 +156,11 @@ export const modules: LearningModule[] = [
     subtitle: "用规则代替预测，在波动里分批低买高卖。",
     icon: Grid3X3,
     accent: "#b7791f",
+    visual: {
+      src: "/infographics/etf-grid.png",
+      alt: "ETF 网格交易信息图：价格区间、网格间距、每格资金和买卖触发",
+      caption: "网格交易把价格区间切成台阶，下跌触发买入，上涨触发卖出，重点是先设好区间、步长、资金和退出条件。",
+    },
     audience: "适合没有时间盯盘、想用 ETF 建立交易纪律的新手。",
     coreMetaphor:
       "网格像在价格山坡上铺台阶：价格往下走，踩到一阶买一点；价格往上走，踩到一阶卖一点。不猜山顶和山脚，只按台阶行动。",
@@ -219,6 +234,11 @@ export const modules: LearningModule[] = [
     subtitle: "从 IPO 流程、认购方式、中签机制到暗盘和首日卖出纪律。",
     icon: CandlestickChart,
     accent: "#3454d1",
+    visual: {
+      src: "/infographics/hk-ipo-flow.png",
+      alt: "港股打新与炒新信息图：招股、认购、中签、暗盘、上市首日和风险提示",
+      caption: "港股打新要把流程节奏、认购成本和卖出纪律放在一起看；炒新则已经是二级市场交易，风险明显更高。",
+    },
     image: "/hk-ipo/slide-14.webp",
     audience: "适合想参与港股新股，但还分不清抽新、孖展、甲乙组和暗盘的新手。",
     coreMetaphor:
@@ -292,6 +312,11 @@ export const modules: LearningModule[] = [
     subtitle: "理解债性、股性、申购缴款、上市卖出、强赎与回售。",
     icon: WalletCards,
     accent: "#8b3f4d",
+    visual: {
+      src: "/infographics/convertible-bond.png",
+      alt: "可转债打新信息图：债性、股性、核心指标、申购流程和强赎回售机制",
+      caption: "可转债一半像债券，一半像股票期权；申购门槛低，但上市价格、强赎、回售和弃购规则都需要提前理解。",
+    },
     audience: "适合想低门槛参与可转债申购，但不懂转股价值和强赎风险的新手。",
     coreMetaphor:
       "可转债像一张带换票权的借条：平时它是公司欠你的债，约定还本付息；如果公司股票涨得好，你还可以按约定价格把债换成股票。",

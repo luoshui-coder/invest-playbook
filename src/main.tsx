@@ -243,8 +243,13 @@ function ModuleIndex({ compact = false }: { compact?: boolean }) {
             key={module.id}
             style={{ "--accent": module.accent } as React.CSSProperties}
           >
-            <span className="module-number">{String(index + 1).padStart(2, "0")}</span>
-            <module.icon size={26} />
+            <div className="module-card-top">
+              <span className="module-number">{String(index + 1).padStart(2, "0")}</span>
+              <module.icon size={26} />
+            </div>
+            <figure className="module-index-visual">
+              <img src={module.visual.src} alt={module.visual.alt} loading="lazy" />
+            </figure>
             <h3>{module.title}</h3>
             <p>{module.subtitle}</p>
             <dl>
@@ -324,6 +329,7 @@ function CalculatorBlock({ module }: { module: LearningModule }) {
 
 function ModulePage({ module }: { module: LearningModule }) {
   const localToc = [
+    ["visual", "信息图"],
     ["concepts", "概念解释"],
     ["terms", "术语索引"],
     ["steps", "操作流程"],
@@ -368,7 +374,17 @@ function ModulePage({ module }: { module: LearningModule }) {
           <p>{module.coreMetaphor}</p>
         </section>
 
-        {module.image ? <img className="module-image" src={module.image} alt={`${module.shortTitle} 原始素材截图`} /> : null}
+        <figure className="module-visual" id="visual">
+          <img src={module.visual.src} alt={module.visual.alt} />
+          <figcaption>{module.visual.caption}</figcaption>
+        </figure>
+
+        {module.image ? (
+          <figure className="source-visual">
+            <img className="module-image" src={module.image} alt={`${module.shortTitle} 原始素材截图`} />
+            <figcaption>原始素材参考：来自港股打新资料页，用于辅助理解市场热度与炒新节奏。</figcaption>
+          </figure>
+        ) : null}
 
         <section className="article-block" id="concepts">
           <h2>概念解释</h2>
