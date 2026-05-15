@@ -16,12 +16,9 @@ import {
   X,
 } from "lucide-react";
 import {
-  dashboardStats,
   glossary,
-  learningPath,
   modules,
   officialSources,
-  visualNotes,
   type LearningModule,
 } from "./data/playbook";
 import "./styles.css";
@@ -168,62 +165,80 @@ function PageShell({ eyebrow, title, intro, children }: { eyebrow: string; title
 }
 
 function HomePage() {
+  const totalSteps = modules.reduce((sum, module) => sum + module.steps.length, 0);
+  const quickLinks = [
+    { href: "#/modules", label: "全部模块", icon: Library },
+    { href: "#/glossary", label: "术语索引", icon: Search },
+    { href: "#/sources", label: "来源与风险", icon: ShieldAlert },
+  ];
+
   return (
-    <PageShell
-      eyebrow="知识型网站 · 模块化学习 · 非投资建议"
-      title="投资理财学习手册"
-      intro="按主题模块组织，把机制、术语、流程、风险和小计算器放在各自页面里，适合从零开始逐步学习。"
-    >
-      <section className="overview-grid">
-        <div className="knowledge-card wide-card">
-          <div className="card-title">
-            <Library size={22} />
-            <h2>学习路线</h2>
-          </div>
-          <div className="route-list">
-            {learningPath.map((item) => (
-              <article key={item.title}>
-                <item.icon size={22} />
-                <strong>{item.title}</strong>
-                <span>{item.text}</span>
-              </article>
-            ))}
-          </div>
-        </div>
-        <div className="knowledge-card">
-          <div className="card-title">
-            <FileText size={22} />
-            <h2>站点概览</h2>
-          </div>
-          <div className="stat-list">
-            {dashboardStats.map((stat) => (
-              <div key={stat.label}>
-                <stat.icon size={18} />
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <main className="home-screen">
+      <section className="home-command" aria-labelledby="home-title">
+        <p className="eyebrow">Investment Playbook</p>
+        <h1 id="home-title">投资理财学习手册</h1>
+        <p className="home-intro">把四类常见策略拆成可学习、可复盘、可查术语的独立模块。</p>
 
-      <ModuleIndex compact />
-
-      <section className="knowledge-card">
-        <div className="card-title">
-          <ShieldAlert size={22} />
-          <h2>阅读前先看风险边界</h2>
+        <div className="home-metrics" aria-label="站点内容概览">
+          <div>
+            <strong>{modules.length}</strong>
+            <span>学习模块</span>
+          </div>
+          <div>
+            <strong>{glossary.length}</strong>
+            <span>术语解释</span>
+          </div>
+          <div>
+            <strong>{totalSteps}</strong>
+            <span>操作步骤</span>
+          </div>
         </div>
-        <div className="note-grid">
-          {visualNotes.map((note) => (
-            <p key={note.text}>
-              <note.icon size={18} />
-              <span>{note.text}</span>
-            </p>
+
+        <nav className="home-quick-links" aria-label="快捷入口">
+          {quickLinks.map((link) => (
+            <a href={link.href} key={link.href}>
+              <link.icon size={18} />
+              <span>{link.label}</span>
+            </a>
           ))}
+        </nav>
+
+        <div className="home-disclaimer">
+          <FileText size={18} />
+          <span>学习材料只解释机制、术语和风险，不构成个性化投资建议。</span>
         </div>
       </section>
-    </PageShell>
+
+      <section className="module-launch-grid" aria-label="模块入口">
+        {modules.map((module, index) => (
+          <a
+            className="module-launch-card"
+            href={`#/modules/${module.id}`}
+            key={module.id}
+            style={{ "--accent": module.accent } as React.CSSProperties}
+          >
+            <figure>
+              <img src={module.visual.src} alt={module.visual.alt} loading="eager" />
+            </figure>
+            <div className="module-launch-body">
+              <div className="module-launch-kicker">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <module.icon size={20} />
+              </div>
+              <h2>{module.title}</h2>
+              <p>{module.subtitle}</p>
+              <div className="module-launch-meta">
+                <span>{module.terms.length} 术语</span>
+                <span>{module.steps.length} 步骤</span>
+                <em>
+                  进入 <ArrowRight size={15} />
+                </em>
+              </div>
+            </div>
+          </a>
+        ))}
+      </section>
+    </main>
   );
 }
 
