@@ -285,8 +285,10 @@ function ModulePage({ module }: { module: LearningModule }) {
     ["visual", "信息图"],
     ["concepts", "概念解释"],
     ["terms", "术语"],
+    ...(module.deepDives?.length ? [["deep", "深入学习"]] : []),
     ["steps", "操作流程"],
     ["risks", "风险误区"],
+    ...(module.gallery?.length ? [["gallery", "资料图集"]] : []),
     ["case", "案例"],
     ["calculator", "计算器"],
   ];
@@ -358,10 +360,27 @@ function ModulePage({ module }: { module: LearningModule }) {
               <details key={term.name}>
                 <summary>{term.name}</summary>
                 <p>{term.plain}</p>
+                {term.example ? <p className="term-example">{term.example}</p> : null}
               </details>
             ))}
           </div>
         </section>
+
+        {module.deepDives?.length ? (
+          <section className="article-block" id="deep">
+            <h2>深入学习</h2>
+            <div className="deep-dive-list">
+              {module.deepDives.map((item) => (
+                <article key={item.title}>
+                  <h3>{item.title}</h3>
+                  {item.body.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="article-block" id="steps">
           <h2>操作流程</h2>
@@ -393,6 +412,21 @@ function ModulePage({ module }: { module: LearningModule }) {
             </ul>
           </div>
         </section>
+
+        {module.gallery?.length ? (
+          <section className="article-block" id="gallery">
+            <h2>资料图集</h2>
+            <p className="gallery-intro">以下图片来自原始学习资料，正文已经提炼为简体解释；图片用于对照术语、资金分配和案例节奏。</p>
+            <div className="source-gallery">
+              {module.gallery.map((item) => (
+                <figure key={item.src}>
+                  <img src={item.src} alt={item.alt} loading="lazy" />
+                  <figcaption>{item.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="article-block case-block" id="case">
           <h2>{module.caseStudy.title}</h2>
