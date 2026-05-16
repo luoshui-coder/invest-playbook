@@ -9,7 +9,6 @@ import {
   ExternalLink,
   FileText,
   Home,
-  Library,
   Menu,
   Search,
   ShieldAlert,
@@ -25,7 +24,6 @@ import "./styles.css";
 
 type Route =
   | { name: "home" }
-  | { name: "modules" }
   | { name: "glossary" }
   | { name: "sources" }
   | { name: "module"; id: string };
@@ -36,7 +34,6 @@ function parseRoute(): Route {
   const hash = window.location.hash.replace(/^#\/?/, "");
   const [section, id] = hash.split("/");
   if (section === "modules" && id) return { name: "module", id };
-  if (section === "modules") return { name: "modules" };
   if (section === "glossary") return { name: "glossary" };
   if (section === "sources") return { name: "sources" };
   return { name: "home" };
@@ -126,7 +123,6 @@ function Header() {
   const [open, setOpen] = useState(false);
   const links = [
     ["#/", "首页"],
-    ["#/modules", "模块索引"],
     ["#/glossary", "术语索引"],
     ["#/sources", "来源"],
   ];
@@ -167,7 +163,6 @@ function PageShell({ eyebrow, title, intro, children }: { eyebrow: string; title
 function HomePage() {
   const totalSteps = modules.reduce((sum, module) => sum + module.steps.length, 0);
   const quickLinks = [
-    { href: "#/modules", label: "全部模块", icon: Library },
     { href: "#/glossary", label: "术语索引", icon: Search },
     { href: "#/sources", label: "来源与风险", icon: ShieldAlert },
   ];
@@ -175,37 +170,41 @@ function HomePage() {
   return (
     <main className="home-screen">
       <section className="home-command" aria-labelledby="home-title">
-        <p className="eyebrow">Investment Playbook</p>
-        <h1 id="home-title">投资理财学习手册</h1>
-        <p className="home-intro">把四类常见策略拆成可学习、可复盘、可查术语的独立模块。</p>
-
-        <div className="home-metrics" aria-label="站点内容概览">
-          <div>
-            <strong>{modules.length}</strong>
-            <span>学习模块</span>
-          </div>
-          <div>
-            <strong>{glossary.length}</strong>
-            <span>术语解释</span>
-          </div>
-          <div>
-            <strong>{totalSteps}</strong>
-            <span>操作步骤</span>
-          </div>
+        <div className="home-title-block">
+          <p className="eyebrow">Investment Playbook</p>
+          <h1 id="home-title">投资理财学习手册</h1>
+          <p className="home-intro">四个模块入口集中呈现，进入后再阅读机制、术语、流程、风险和案例。</p>
         </div>
 
-        <nav className="home-quick-links" aria-label="快捷入口">
-          {quickLinks.map((link) => (
-            <a href={link.href} key={link.href}>
-              <link.icon size={18} />
-              <span>{link.label}</span>
-            </a>
-          ))}
-        </nav>
+        <div className="home-summary-panel">
+          <div className="home-metrics" aria-label="站点内容概览">
+            <div>
+              <strong>{modules.length}</strong>
+              <span>学习模块</span>
+            </div>
+            <div>
+              <strong>{glossary.length}</strong>
+              <span>术语解释</span>
+            </div>
+            <div>
+              <strong>{totalSteps}</strong>
+              <span>操作步骤</span>
+            </div>
+          </div>
 
-        <div className="home-disclaimer">
-          <FileText size={18} />
-          <span>学习材料只解释机制、术语和风险，不构成个性化投资建议。</span>
+          <nav className="home-quick-links" aria-label="快捷入口">
+            {quickLinks.map((link) => (
+              <a href={link.href} key={link.href}>
+                <link.icon size={18} />
+                <span>{link.label}</span>
+              </a>
+            ))}
+          </nav>
+
+          <div className="home-disclaimer">
+            <FileText size={18} />
+            <span>学习材料只解释机制、术语和风险，不构成个性化投资建议。</span>
+          </div>
         </div>
       </section>
 
@@ -239,67 +238,6 @@ function HomePage() {
         ))}
       </section>
     </main>
-  );
-}
-
-function ModuleIndex({ compact = false }: { compact?: boolean }) {
-  return (
-    <section className={compact ? "index-section compact" : "index-section"}>
-      <div className="section-heading">
-        <p className="eyebrow">Modules</p>
-        <h2>模块分类索引</h2>
-        <p>每个模块都是一个独立知识页，内部再分概念、术语、流程、风险、案例和计算器。</p>
-      </div>
-      <div className="module-index-grid">
-        {modules.map((module, index) => (
-          <a
-            className="module-index-card"
-            href={`#/modules/${module.id}`}
-            key={module.id}
-            style={{ "--accent": module.accent } as React.CSSProperties}
-          >
-            <div className="module-card-top">
-              <span className="module-number">{String(index + 1).padStart(2, "0")}</span>
-              <module.icon size={26} />
-            </div>
-            <figure className="module-index-visual">
-              <img src={module.visual.src} alt={module.visual.alt} loading="lazy" />
-            </figure>
-            <h3>{module.title}</h3>
-            <p>{module.subtitle}</p>
-            <dl>
-              <div>
-                <dt>{module.terms.length}</dt>
-                <dd>术语</dd>
-              </div>
-              <div>
-                <dt>{module.steps.length}</dt>
-                <dd>步骤</dd>
-              </div>
-              <div>
-                <dt>{module.risks.length}</dt>
-                <dd>风险</dd>
-              </div>
-            </dl>
-            <em>
-              查看模块 <ArrowRight size={16} />
-            </em>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ModulesPage() {
-  return (
-    <PageShell
-      eyebrow="Module Index"
-      title="按模块学习"
-      intro="先选一个主题进入。模块页里会提供目录和局部术语索引，不需要在一条长页面里来回找。"
-    >
-      <ModuleIndex />
-    </PageShell>
   );
 }
 
@@ -346,7 +284,7 @@ function ModulePage({ module }: { module: LearningModule }) {
   const localToc = [
     ["visual", "信息图"],
     ["concepts", "概念解释"],
-    ["terms", "术语索引"],
+    ["terms", "术语"],
     ["steps", "操作流程"],
     ["risks", "风险误区"],
     ["case", "案例"],
@@ -356,8 +294,8 @@ function ModulePage({ module }: { module: LearningModule }) {
   return (
     <main className="article-page" style={{ "--accent": module.accent } as React.CSSProperties}>
       <aside className="article-sidebar">
-        <a className="back-link" href="#/modules">
-          <ArrowLeft size={16} /> 模块索引
+        <a className="back-link" href="#/">
+          <ArrowLeft size={16} /> 返回首页
         </a>
         <div className="sidebar-title">
           <module.icon size={24} />
@@ -414,7 +352,7 @@ function ModulePage({ module }: { module: LearningModule }) {
         </section>
 
         <section className="article-block" id="terms">
-          <h2>本模块术语索引</h2>
+          <h2>本模块术语</h2>
           <div className="term-list">
             {module.terms.map((term) => (
               <details key={term.name}>
@@ -527,9 +465,9 @@ function SourcesPage() {
 
 function NotFoundPage() {
   return (
-    <PageShell eyebrow="404" title="没有找到这个模块" intro="返回模块索引，重新选择一个主题。">
-      <a className="primary-link" href="#/modules">
-        <Home size={18} /> 返回模块索引
+    <PageShell eyebrow="404" title="没有找到这个模块" intro="返回首页，重新选择一个主题。">
+      <a className="primary-link" href="#/">
+        <Home size={18} /> 返回首页
       </a>
     </PageShell>
   );
@@ -543,7 +481,6 @@ function App() {
     <>
       <Header />
       {route.name === "home" ? <HomePage /> : null}
-      {route.name === "modules" ? <ModulesPage /> : null}
       {route.name === "glossary" ? <GlossaryPage /> : null}
       {route.name === "sources" ? <SourcesPage /> : null}
       {route.name === "module" && currentModule ? <ModulePage module={currentModule} /> : null}
